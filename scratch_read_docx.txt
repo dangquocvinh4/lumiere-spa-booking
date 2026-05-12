@@ -1,0 +1,532 @@
+ĐỒ ÁN / BÁO CÁO KHỞI ĐẦU DỰ ÁN
+BÁO CÁO PHÂN TÍCH, THIẾT KẾ VÀ MÔ TẢ NGHIỆP VỤ
+HỆ THỐNG QUẢN LÝ VÀ PHÊ DUYỆT QUY TRÌNH NỘI BỘ
+Workflow Approval System cho doanh nghiệp
+Ngày lập: 11/05/2026
+Công nghệ đề xuất: Vite + React, Spring Boot REST API, PostgreSQL/MySQL, JWT, Vercel, Render/Railway
+Phiên bản tài liệu: 1.0
+Đối tượng sử dụng: doanh nghiệp vừa và nhỏ, phòng ban nội bộ, nhóm vận hành
+Thông Tin Tài Liệu
+Mục
+Nội dung
+Tên hệ thống
+Hệ thống quản lý và phê duyệt quy trình nội bộ
+Tên tiếng Anh gợi ý
+Workflow Approval System
+Mục tiêu
+Số hóa quá trình tạo, theo dõi và phê duyệt các yêu cầu nội bộ trong doanh nghiệp.
+Phạm vi giai đoạn đầu
+Đăng nhập, phân quyền, tạo yêu cầu, duyệt/từ chối, lịch sử xử lý, thông báo trong hệ thống, dashboard cơ bản.
+Công nghệ
+Vite + React cho frontend; Spring Boot cho backend; PostgreSQL/MySQL cho cơ sở dữ liệu; Vercel cho frontend; Render/Railway/Fly.io cho backend.
+Ghi chú triển khai
+Vercel phù hợp nhất cho frontend Vite. Backend Spring Boot nên deploy riêng trên Render/Railway/Fly.io hoặc VPS.
+Phiên bản
+Ngày
+Người thực hiện
+Nội dung thay đổi
+1.0
+11/05/2026
+Sinh viên
+Tạo báo cáo phân tích, thiết kế và mô tả nghiệp vụ ban đầu.
+Mục Lục
+Nhấn chuột phải và chọn Update Field để cập nhật mục lục trong Microsoft Word.
+1. Tổng Quan Đề Tài
+1.1. Bối Cảnh
+Trong nhiều doanh nghiệp, các quy trình nội bộ như xin nghỉ phép, đề nghị thanh toán, mua sắm thiết bị, duyệt hợp đồng hoặc công tác phí vẫn được xử lý bằng giấy tờ, email, tin nhắn hoặc bảng tính rời rạc. Cách làm này khiến nhân viên khó theo dõi trạng thái, người quản lý dễ bỏ sót yêu cầu, còn bộ phận hành chính/kế toán khó kiểm soát lịch sử phê duyệt.
+Hệ thống quản lý và phê duyệt quy trình nội bộ được xây dựng nhằm số hóa các luồng xử lý này thành một nền tảng tập trung. Mỗi yêu cầu có trạng thái rõ ràng, có người phụ trách, có lịch sử xử lý và có thông báo cho các bên liên quan.
+1.2. Mục Tiêu
+Cung cấp một cổng nội bộ để nhân viên tạo và theo dõi các yêu cầu cần phê duyệt.
+Hỗ trợ luồng duyệt nhiều cấp tùy theo loại yêu cầu, phòng ban, vai trò hoặc hạn mức tiền.
+Minh bạch hóa lịch sử xử lý: ai duyệt, duyệt lúc nào, ghi chú gì, trạng thái thay đổi ra sao.
+Giảm thời gian xử lý thủ công, hạn chế thất lạc yêu cầu và giúp quản lý nắm nhanh khối lượng công việc.
+Tạo nền tảng có thể mở rộng sang thông báo email, chữ ký số, tích hợp kế toán hoặc workflow nâng cao.
+1.3. Đối Tượng Sử Dụng
+Nhóm người dùng
+Mô tả
+Nhu cầu chính
+Nhân viên
+Người tạo yêu cầu nội bộ.
+Tạo yêu cầu, gửi duyệt, theo dõi trạng thái, nhận thông báo.
+Trưởng phòng
+Người duyệt cấp đầu hoặc quản lý trực tiếp.
+Xem yêu cầu của nhân viên trong phòng ban, duyệt/từ chối/yêu cầu bổ sung.
+HR/Kế toán/Hành chính
+Bộ phận kiểm tra nghiệp vụ tùy loại yêu cầu.
+Kiểm tra thông tin, xác nhận chứng từ, xử lý hồ sơ.
+Giám đốc/Ban quản lý
+Người duyệt cấp cao với yêu cầu quan trọng hoặc vượt hạn mức.
+Duyệt cuối, xem báo cáo tổng hợp, kiểm soát rủi ro.
+Admin hệ thống
+Người cấu hình hệ thống.
+Quản lý người dùng, vai trò, phòng ban, loại yêu cầu, quy tắc duyệt.
+2. Phân Tích Nghiệp Vụ
+2.1. Vấn Đề Hiện Tại
+Yêu cầu nội bộ bị phân tán ở nhiều kênh như giấy, email, nhóm chat, file Excel.
+Nhân viên không biết yêu cầu đang nằm ở bước nào hoặc ai đang xử lý.
+Người duyệt thiếu danh sách tập trung các yêu cầu đang chờ xử lý.
+Không có lịch sử đầy đủ để kiểm tra khi xảy ra tranh chấp hoặc sai sót.
+Khó thống kê số lượng yêu cầu theo phòng ban, loại yêu cầu, thời gian xử lý hoặc tỷ lệ từ chối.
+2.2. Quy Trình Mong Muốn
+Nhân viên đăng nhập vào hệ thống và chọn loại yêu cầu cần tạo.
+Hệ thống hiển thị biểu mẫu phù hợp với loại yêu cầu, ví dụ: nghỉ phép, duyệt chi, mua thiết bị, duyệt hợp đồng.
+Nhân viên nhập thông tin, đính kèm tài liệu nếu có và gửi yêu cầu.
+Hệ thống tự xác định bước duyệt đầu tiên dựa trên quy tắc cấu hình.
+Người duyệt nhận thông báo, kiểm tra nội dung và chọn duyệt, từ chối hoặc yêu cầu bổ sung.
+Nếu yêu cầu cần nhiều cấp duyệt, hệ thống chuyển tiếp sang cấp duyệt tiếp theo.
+Khi hoàn tất, hệ thống cập nhật trạng thái cuối cùng và thông báo cho người tạo yêu cầu.
+Toàn bộ thao tác được ghi vào lịch sử xử lý để phục vụ kiểm tra và báo cáo.
+2.3. Các Loại Yêu Cầu Giai Đoạn Đầu
+Loại yêu cầu
+Thông tin chính
+Luồng duyệt gợi ý
+Xin nghỉ phép
+Loại nghỉ, ngày bắt đầu, ngày kết thúc, lý do, người bàn giao công việc.
+Nhân viên -> Trưởng phòng -> HR xác nhận.
+Duyệt chi phí
+Số tiền, mục đích chi, hóa đơn/chứng từ, dự án/phòng ban liên quan.
+Nhân viên -> Trưởng phòng -> Kế toán -> Giám đốc nếu vượt hạn mức.
+Mua thiết bị
+Tên thiết bị, số lượng, lý do mua, dự toán, nhà cung cấp đề xuất.
+Nhân viên -> Trưởng phòng -> Hành chính/Kế toán -> Giám đốc.
+Duyệt hợp đồng
+Tên đối tác, giá trị hợp đồng, file hợp đồng, thời hạn, người phụ trách.
+Nhân viên -> Trưởng phòng -> Pháp lý/Kế toán -> Giám đốc.
+Công tác phí
+Địa điểm, thời gian, chi phí dự kiến, mục đích công tác.
+Nhân viên -> Trưởng phòng -> Kế toán -> Giám đốc nếu cần.
+2.4. Trạng Thái Yêu Cầu
+Trạng thái
+Ý nghĩa
+Ai có thể chuyển trạng thái
+DRAFT
+Yêu cầu đang được soạn, chưa gửi duyệt.
+Người tạo yêu cầu.
+SUBMITTED
+Yêu cầu đã gửi và đang chờ xác định bước duyệt.
+Người tạo/hệ thống.
+PENDING_APPROVAL
+Yêu cầu đang chờ một người hoặc một nhóm xử lý.
+Hệ thống.
+NEED_MORE_INFO
+Người duyệt yêu cầu bổ sung thông tin.
+Người duyệt hiện tại.
+APPROVED
+Yêu cầu đã được duyệt hoàn tất.
+Người duyệt cuối/hệ thống.
+REJECTED
+Yêu cầu bị từ chối.
+Người duyệt hiện tại.
+CANCELLED
+Người tạo hủy yêu cầu khi chưa hoàn tất.
+Người tạo hoặc Admin.
+2.5. Quy Tắc Nghiệp Vụ Chính
+Mỗi yêu cầu phải thuộc một loại yêu cầu đã được cấu hình.
+Người tạo chỉ được sửa yêu cầu khi trạng thái là DRAFT hoặc NEED_MORE_INFO.
+Người tạo không được tự duyệt yêu cầu của chính mình, trừ khi Admin cấu hình ngoại lệ.
+Yêu cầu có số tiền vượt hạn mức phải đi qua cấp duyệt cao hơn.
+Mỗi hành động phê duyệt, từ chối hoặc yêu cầu bổ sung đều phải có bản ghi lịch sử.
+Khi yêu cầu bị từ chối, hệ thống dừng workflow và thông báo cho người tạo.
+Khi một bước duyệt hoàn tất, hệ thống tự chuyển sang bước tiếp theo nếu còn bước cần xử lý.
+Admin có quyền cấu hình loại yêu cầu, phòng ban, vai trò và quy tắc duyệt, nhưng không được xóa lịch sử xử lý đã phát sinh.
+3. Yêu Cầu Hệ Thống
+3.1. Yêu Cầu Chức Năng
+Mã
+Chức năng
+Mô tả
+Ưu tiên
+FR-01
+Đăng nhập
+Người dùng đăng nhập bằng email/tên đăng nhập và mật khẩu.
+Cao
+FR-02
+Phân quyền
+Hệ thống kiểm soát quyền theo vai trò: Admin, Employee, Manager, HR, Accounting, Director.
+Cao
+FR-03
+Quản lý hồ sơ người dùng
+Admin tạo/sửa/kích hoạt/vô hiệu hóa tài khoản, gán phòng ban và vai trò.
+Cao
+FR-04
+Quản lý loại yêu cầu
+Admin cấu hình tên loại yêu cầu, biểu mẫu, hạn mức, luồng duyệt.
+Cao
+FR-05
+Tạo yêu cầu
+Nhân viên tạo yêu cầu mới, nhập thông tin, đính kèm file.
+Cao
+FR-06
+Gửi yêu cầu
+Nhân viên gửi yêu cầu vào luồng phê duyệt.
+Cao
+FR-07
+Danh sách chờ duyệt
+Người duyệt xem các yêu cầu đang cần mình xử lý.
+Cao
+FR-08
+Duyệt/Từ chối/Yêu cầu bổ sung
+Người duyệt xử lý yêu cầu kèm ghi chú.
+Cao
+FR-09
+Lịch sử xử lý
+Ghi lại mọi thay đổi trạng thái, người thực hiện, thời gian, ghi chú.
+Cao
+FR-10
+Thông báo
+Thông báo trong hệ thống khi có yêu cầu mới, yêu cầu được duyệt/từ chối hoặc cần bổ sung.
+Trung bình
+FR-11
+Dashboard
+Hiển thị tổng số yêu cầu, chờ duyệt, đã duyệt, bị từ chối theo thời gian/phòng ban.
+Trung bình
+FR-12
+Tìm kiếm và lọc
+Lọc yêu cầu theo loại, trạng thái, người tạo, phòng ban, khoảng thời gian.
+Trung bình
+FR-13
+Xuất báo cáo
+Xuất danh sách yêu cầu ra Excel/PDF ở giai đoạn mở rộng.
+Thấp
+3.2. Yêu Cầu Phi Chức Năng
+Nhóm
+Yêu cầu
+Bảo mật
+Sử dụng JWT cho API, mã hóa mật khẩu bằng BCrypt, kiểm tra quyền ở backend.
+Hiệu năng
+Danh sách yêu cầu phải hỗ trợ phân trang, tìm kiếm và lọc để tránh tải dữ liệu quá lớn.
+Khả dụng
+Giao diện responsive, dùng được trên laptop và điện thoại.
+Dễ bảo trì
+Tách rõ frontend, backend, database; API có quy ước endpoint và response thống nhất.
+Audit
+Không xóa cứng dữ liệu quan trọng; ưu tiên soft delete và lưu lịch sử xử lý.
+Triển khai
+Frontend deploy trên Vercel; backend deploy trên Render/Railway/Fly.io; database cloud.
+4. Thiết Kế Hệ Thống
+4.1. Kiến Trúc Tổng Thể
+Hệ thống được thiết kế theo mô hình web application tách frontend và backend. Frontend giao tiếp với backend thông qua REST API. Backend chịu trách nhiệm xác thực, phân quyền, xử lý nghiệp vụ workflow và lưu dữ liệu.
+Người dùng   |   vVite + React Frontend (Deploy Vercel)   |   | HTTPS REST API / JWT   vSpring Boot Backend (Deploy Render/Railway/Fly.io)   |   +--> PostgreSQL/MySQL Database   +--> File Storage cho tài liệu đính kèm   +--> Email/Notification Service ở giai đoạn mở rộng
+4.2. Module Chức Năng
+Module
+Trách nhiệm chính
+Authentication & Authorization
+Đăng nhập, cấp JWT, kiểm tra quyền truy cập API.
+User & Department Management
+Quản lý người dùng, phòng ban, vai trò, người quản lý trực tiếp.
+Request Type Management
+Cấu hình loại yêu cầu, biểu mẫu dữ liệu, hạn mức và luồng duyệt.
+Approval Request
+Tạo, sửa, gửi, hủy và xem chi tiết yêu cầu.
+Workflow Engine đơn giản
+Xác định bước duyệt hiện tại, chuyển bước, kết thúc workflow.
+Approval Action
+Duyệt, từ chối, yêu cầu bổ sung thông tin.
+Notification
+Tạo thông báo trong hệ thống cho người cần xử lý hoặc người tạo.
+Dashboard & Report
+Thống kê số lượng yêu cầu theo trạng thái, loại yêu cầu, phòng ban, thời gian.
+4.3. Use Case Chính
+Use case
+Tác nhân
+Mô tả ngắn
+Đăng nhập
+Tất cả người dùng
+Người dùng xác thực để vào hệ thống.
+Tạo yêu cầu
+Nhân viên
+Nhập thông tin và lưu yêu cầu ở dạng nháp.
+Gửi yêu cầu
+Nhân viên
+Chuyển yêu cầu vào luồng duyệt.
+Xử lý yêu cầu
+Người duyệt
+Duyệt, từ chối hoặc yêu cầu bổ sung.
+Theo dõi yêu cầu
+Nhân viên
+Xem trạng thái và lịch sử yêu cầu đã tạo.
+Cấu hình quy trình
+Admin
+Tạo loại yêu cầu và các bước duyệt tương ứng.
+Xem dashboard
+Manager/Admin/Director
+Theo dõi thống kê tổng quan.
+4.4. Luồng Xử Lý Yêu Cầu
+DRAFT  | Người tạo gửi yêu cầu  vPENDING_APPROVAL  |-- Người duyệt từ chối ------------> REJECTED  |-- Người duyệt yêu cầu bổ sung ----> NEED_MORE_INFO  |                                      | Người tạo cập nhật và gửi lại  |                                      v  |                                   PENDING_APPROVAL  |-- Người duyệt đồng ý         |         | Còn bước duyệt tiếp theo? Có -> PENDING_APPROVAL bước tiếp theo         | Không         v      APPROVED
+4.5. Thiết Kế Cơ Sở Dữ Liệu Đề Xuất
+Bảng
+Mục đích
+Trường chính gợi ý
+users
+Lưu tài khoản người dùng.
+id, full_name, email, password_hash, department_id, manager_id, status, created_at
+roles
+Lưu vai trò hệ thống.
+id, code, name, description
+user_roles
+Quan hệ nhiều-nhiều giữa user và role.
+user_id, role_id
+departments
+Lưu phòng ban.
+id, name, code, manager_id
+request_types
+Lưu loại yêu cầu.
+id, code, name, description, active
+approval_workflows
+Cấu hình workflow cho từng loại yêu cầu.
+id, request_type_id, name, active
+approval_steps
+Các bước duyệt trong workflow.
+id, workflow_id, step_order, approver_type, role_code, department_id, min_amount, max_amount
+approval_requests
+Yêu cầu do nhân viên tạo.
+id, request_code, request_type_id, requester_id, title, content, amount, status, current_step_id, created_at, submitted_at
+approval_actions
+Lịch sử thao tác xử lý.
+id, request_id, step_id, actor_id, action, note, created_at
+attachments
+File đính kèm yêu cầu.
+id, request_id, file_name, file_url, file_type, uploaded_by, created_at
+notifications
+Thông báo trong hệ thống.
+id, user_id, title, message, read_at, created_at
+4.6. Quan Hệ Dữ Liệu Chính
+Một phòng ban có nhiều người dùng; một người dùng có thể có người quản lý trực tiếp.
+Một người dùng có thể có nhiều vai trò thông qua bảng user_roles.
+Một loại yêu cầu có thể có một hoặc nhiều workflow, nhưng ở MVP chỉ cần một workflow đang active.
+Một workflow gồm nhiều bước duyệt được sắp xếp theo step_order.
+Một yêu cầu thuộc một loại yêu cầu và do một người dùng tạo.
+Một yêu cầu có nhiều bản ghi approval_actions để lưu lịch sử xử lý.
+Một yêu cầu có thể có nhiều file đính kèm và nhiều thông báo liên quan.
+5. Thiết Kế API Backend
+API được thiết kế theo RESTful. Tất cả API nghiệp vụ, trừ đăng nhập, cần gửi JWT ở header Authorization.
+Nhóm API
+Method
+Endpoint
+Mục đích
+Auth
+POST
+/api/auth/login
+Đăng nhập và nhận access token.
+Auth
+GET
+/api/auth/me
+Lấy thông tin người dùng hiện tại.
+Users
+GET
+/api/users
+Danh sách người dùng, có phân trang và lọc.
+Users
+POST
+/api/users
+Tạo tài khoản người dùng.
+Departments
+GET
+/api/departments
+Danh sách phòng ban.
+Request Types
+GET
+/api/request-types
+Danh sách loại yêu cầu.
+Request Types
+POST
+/api/request-types
+Tạo loại yêu cầu mới.
+Requests
+GET
+/api/requests
+Danh sách yêu cầu người dùng có quyền xem.
+Requests
+POST
+/api/requests
+Tạo yêu cầu dạng nháp.
+Requests
+GET
+/api/requests/{id}
+Xem chi tiết yêu cầu.
+Requests
+PUT
+/api/requests/{id}
+Cập nhật yêu cầu khi còn được sửa.
+Requests
+POST
+/api/requests/{id}/submit
+Gửi yêu cầu vào luồng duyệt.
+Approvals
+GET
+/api/approvals/pending
+Danh sách yêu cầu đang chờ người dùng hiện tại duyệt.
+Approvals
+POST
+/api/approvals/{id}/approve
+Duyệt yêu cầu.
+Approvals
+POST
+/api/approvals/{id}/reject
+Từ chối yêu cầu.
+Approvals
+POST
+/api/approvals/{id}/request-info
+Yêu cầu bổ sung thông tin.
+Notifications
+GET
+/api/notifications
+Danh sách thông báo.
+Notifications
+PATCH
+/api/notifications/{id}/read
+Đánh dấu đã đọc.
+Dashboard
+GET
+/api/dashboard/summary
+Thống kê tổng quan.
+5.1. Chuẩn Response Gợi Ý
+{  "success": true,  "message": "Request processed successfully",  "data": {},  "errors": []}
+{  "success": false,  "message": "Validation failed",  "data": null,  "errors": [    { "field": "title", "message": "Title is required" }  ]}
+6. Thiết Kế Giao Diện
+6.1. Màn Hình Chính
+Màn hình
+Người dùng
+Nội dung/chức năng
+Đăng nhập
+Tất cả
+Form email/mật khẩu, thông báo lỗi đăng nhập.
+Dashboard
+Manager/Admin/Director
+Tổng quan số yêu cầu, biểu đồ theo trạng thái, yêu cầu chờ xử lý.
+Yêu cầu của tôi
+Nhân viên
+Danh sách yêu cầu đã tạo, trạng thái, ngày tạo, người đang xử lý.
+Tạo yêu cầu
+Nhân viên
+Chọn loại yêu cầu, nhập thông tin, đính kèm file, lưu nháp hoặc gửi.
+Chi tiết yêu cầu
+Tất cả người có quyền
+Thông tin yêu cầu, file đính kèm, luồng duyệt, lịch sử xử lý.
+Chờ tôi duyệt
+Người duyệt
+Danh sách yêu cầu đang cần xử lý, nút duyệt/từ chối/yêu cầu bổ sung.
+Quản lý người dùng
+Admin
+Tạo/sửa tài khoản, gán vai trò, phòng ban.
+Cấu hình loại yêu cầu
+Admin
+Tạo loại yêu cầu, cấu hình workflow và hạn mức.
+Thông báo
+Tất cả
+Danh sách thông báo, đánh dấu đã đọc.
+6.2. Nguyên Tắc UI/UX
+Giao diện ưu tiên tính rõ ràng, dễ quét thông tin, phù hợp môi trường văn phòng.
+Danh sách yêu cầu cần có bộ lọc theo trạng thái, loại yêu cầu, ngày tạo, phòng ban.
+Các trạng thái nên dùng màu nhất quán: chờ duyệt, đã duyệt, từ chối, cần bổ sung.
+Trang chi tiết yêu cầu cần hiển thị luồng duyệt và lịch sử xử lý nổi bật để tăng tính minh bạch.
+Các hành động quan trọng như từ chối hoặc hủy yêu cầu cần có hộp xác nhận.
+7. Phạm Vi MVP Và Kế Hoạch Xây Dựng
+7.1. MVP Nên Làm Trước
+Hạng mục
+Mô tả
+Kết quả mong đợi
+Auth + phân quyền
+Đăng nhập JWT, role Employee/Manager/Admin.
+Có thể kiểm soát quyền truy cập cơ bản.
+Quản lý người dùng/phòng ban
+Admin tạo user, gán phòng ban và người quản lý.
+Có dữ liệu tổ chức để chạy workflow.
+Tạo yêu cầu
+Nhân viên tạo và gửi yêu cầu xin nghỉ/duyệt chi.
+Có nghiệp vụ đầu vào rõ ràng.
+Duyệt một hoặc nhiều cấp
+Trưởng phòng duyệt, sau đó chuyển tiếp nếu cần.
+Thể hiện điểm mạnh workflow.
+Lịch sử xử lý
+Ghi lại mọi hành động trên yêu cầu.
+Có khả năng kiểm tra/audit.
+Dashboard cơ bản
+Tổng số yêu cầu, chờ duyệt, đã duyệt, bị từ chối.
+Dễ demo kết quả hệ thống.
+7.2. Backlog Mở Rộng
+Thông báo email khi có yêu cầu mới hoặc khi yêu cầu hoàn tất.
+Cấu hình form động theo từng loại yêu cầu.
+Upload file lên cloud storage thay vì lưu local.
+Xuất báo cáo Excel/PDF.
+Tích hợp chữ ký số hoặc xác thực blockchain để kiểm tra tính toàn vẹn tài liệu.
+Ứng dụng mobile hoặc PWA cho quản lý duyệt nhanh trên điện thoại.
+AI gợi ý luồng duyệt, phát hiện yêu cầu thiếu thông tin hoặc tóm tắt nội dung hợp đồng.
+7.3. Kế Hoạch Thực Hiện Gợi Ý
+Giai đoạn
+Công việc
+Sản phẩm đầu ra
+Tuần 1
+Khởi tạo project Vite, Spring Boot, database; thiết kế schema; dựng auth.
+Chạy được frontend/backend, đăng nhập cơ bản.
+Tuần 2
+Xây CRUD người dùng, phòng ban, vai trò, loại yêu cầu.
+Admin có thể cấu hình dữ liệu nền.
+Tuần 3
+Xây chức năng tạo yêu cầu, gửi yêu cầu, danh sách yêu cầu của tôi.
+Nhân viên có thể tạo và theo dõi yêu cầu.
+Tuần 4
+Xây luồng duyệt, lịch sử xử lý, danh sách chờ duyệt.
+Manager có thể duyệt/từ chối/yêu cầu bổ sung.
+Tuần 5
+Xây dashboard, thông báo, lọc/tìm kiếm, hoàn thiện UI.
+Hệ thống có thể demo hoàn chỉnh MVP.
+Tuần 6
+Kiểm thử, sửa lỗi, viết tài liệu API, deploy frontend/backend.
+Bản hoàn thiện để trình bày và nộp báo cáo.
+8. Kiểm Thử Và Tiêu Chí Hoàn Thành
+8.1. Test Case Nghiệp Vụ Mẫu
+Mã
+Tình huống
+Kết quả mong đợi
+TC-01
+Nhân viên đăng nhập sai mật khẩu.
+Hệ thống báo lỗi, không cấp token.
+TC-02
+Nhân viên tạo yêu cầu xin nghỉ thiếu ngày kết thúc.
+Hệ thống báo lỗi validate.
+TC-03
+Nhân viên gửi yêu cầu hợp lệ.
+Trạng thái chuyển sang PENDING_APPROVAL và tạo thông báo cho trưởng phòng.
+TC-04
+Trưởng phòng duyệt yêu cầu.
+Hệ thống ghi lịch sử và chuyển bước tiếp theo hoặc APPROVED.
+TC-05
+Người không có quyền cố duyệt yêu cầu.
+API trả lỗi 403 Forbidden.
+TC-06
+Người duyệt yêu cầu bổ sung thông tin.
+Trạng thái chuyển NEED_MORE_INFO và người tạo nhận thông báo.
+TC-07
+Nhân viên cập nhật yêu cầu cần bổ sung và gửi lại.
+Trạng thái quay lại PENDING_APPROVAL.
+TC-08
+Yêu cầu bị từ chối.
+Workflow kết thúc, trạng thái REJECTED, có ghi chú từ chối.
+8.2. Tiêu Chí Hoàn Thành MVP
+Người dùng có thể đăng nhập và được phân quyền đúng vai trò.
+Nhân viên có thể tạo, lưu nháp, gửi và theo dõi yêu cầu.
+Người duyệt có danh sách yêu cầu chờ xử lý và có thể duyệt/từ chối/yêu cầu bổ sung.
+Hệ thống lưu đầy đủ lịch sử xử lý của từng yêu cầu.
+Dashboard hiển thị các thống kê cơ bản phục vụ demo.
+Frontend được deploy lên Vercel, backend và database chạy ổn định trên môi trường deploy riêng.
+9. Gợi Ý Cấu Trúc Project
+9.1. Frontend Vite + React
+frontend/  src/    api/      authApi.ts      requestApi.ts      approvalApi.ts    components/      Layout/      StatusBadge/      DataTable/    pages/      LoginPage.tsx      DashboardPage.tsx      MyRequestsPage.tsx      CreateRequestPage.tsx      RequestDetailPage.tsx      PendingApprovalsPage.tsx      AdminUsersPage.tsx    routes/      AppRoutes.tsx    store/      authStore.ts    utils/      formatDate.ts      constants.ts
+9.2. Backend Spring Boot
+backend/  src/main/java/com/example/workflow/    auth/      AuthController.java      JwtService.java      SecurityConfig.java    user/      User.java      UserRepository.java      UserService.java      UserController.java    department/    requesttype/    approvalrequest/      ApprovalRequest.java      ApprovalRequestService.java      ApprovalRequestController.java    workflow/      ApprovalWorkflow.java      ApprovalStep.java      WorkflowService.java    approval/      ApprovalAction.java      ApprovalController.java    notification/    dashboard/    common/      ApiResponse.java      ErrorResponse.java      GlobalExceptionHandler.java
+10. Kết Luận
+Hệ thống quản lý và phê duyệt quy trình nội bộ là đề tài có tính ứng dụng cao trong bối cảnh doanh nghiệp cần hiện đại hóa vận hành văn phòng. Đề tài không chỉ dừng ở CRUD đơn giản mà có nghiệp vụ rõ ràng: phân quyền, workflow nhiều cấp, trạng thái xử lý, thông báo và lịch sử audit.
+Với kiến trúc Vite + Spring Boot, nhóm phát triển có thể triển khai nhanh phần giao diện, đồng thời xây dựng backend chắc chắn cho nghiệp vụ phê duyệt. Giai đoạn đầu nên tập trung vào MVP gồm đăng nhập, tạo yêu cầu, duyệt/từ chối, lịch sử xử lý và dashboard cơ bản. Sau khi MVP ổn định, hệ thống có thể mở rộng thêm email, xuất báo cáo, chữ ký số, AI hỗ trợ xử lý tài liệu hoặc tích hợp với các hệ thống nội bộ khác.
+Phụ Lục A. Dữ Liệu Mẫu Khi Demo
+Nhóm dữ liệu
+Ví dụ
+Phòng ban
+IT, Kế toán, Nhân sự, Kinh doanh, Hành chính
+Vai trò
+EMPLOYEE, MANAGER, HR, ACCOUNTING, DIRECTOR, ADMIN
+Người dùng
+Nguyễn Văn A - Nhân viên IT; Trần Thị B - Trưởng phòng IT; Lê Văn C - Kế toán
+Loại yêu cầu
+Xin nghỉ phép, Duyệt chi phí, Mua thiết bị, Duyệt hợp đồng
+Yêu cầu mẫu
+Đề nghị mua laptop cho nhân viên mới; Xin nghỉ phép 2 ngày; Duyệt chi phí tiếp khách 3.000.000 VNĐ

@@ -1,0 +1,28 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+dist/
+.env
+.env.local
+
+# Java
+target/
+*.class
+.mvn/
+mvnw
+mvnw.cmd
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Antigravity
+.agent/
+.gemini/
+lint_output.txt
+fix_lint.py
