@@ -104,6 +104,7 @@ public class BookingManager {
         app.setCustomerId(customerId);
         app.setBranchId(branchId);
         app.setStaffId(staffId);
+        app.setCustomer(userRepository.findById(customerId).orElse(null));
         app.setStartAt(startAt);
         app.setEndAt(endAt);
         app.setNote(note);
