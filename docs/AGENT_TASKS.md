@@ -41,5 +41,6 @@
 - [ ] Viết E2E Test cho luồng Booking chính bằng Playwright.
 
 ### Devops Engineer
-- [ ] Thiết lập Dockerfile cho Frontend và Backend.
-- [ ] Cấu hình CI/CD (GitHub Actions) để tự động deploy lên Staging.
+- [ ] Xây dựng script `.bat` hoặc `.sh` để khởi động nhanh cả FE và BE chỉ với 1 click.
+- [ ] Thiết lập quy trình Backup database MySQL định kỳ (mysqldump).
+- [ ] Tối ưu hóa bộ nhớ cho Java khi chạy trên các máy cấu hình yếu cho demo.

@@ -8,8 +8,20 @@ export const PrivateRoute = () => {
 
 export const AdminRoute = () => {
   const { isAuthenticated, user } = useAuthStore();
-  const isAdmin = user?.roles?.some(role => role === 'ROLE_ADMIN' || role === 'ROLE_MANAGER');
+  const isAdmin = user?.roles?.some(role => 
+    role === 'ROLE_ADMIN' || role === 'ROLE_MANAGER' || role === 'ROLE_RECEPTIONIST'
+  );
 
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
-  return isAdmin ? <Outlet /> : <Navigate to="/" replace />;
+    if (!isAuthenticated) return <Navigate to="/login" replace />;
+    return isAdmin ? <Outlet /> : <Navigate to="/" replace />;
+};
+
+export const StaffRoute = () => {
+    const { isAuthenticated, user } = useAuthStore();
+    const isStaff = user?.roles?.some(role => 
+      role === 'ROLE_STAFF' || role === 'ROLE_THERAPIST' || role === 'ROLE_ADMIN' || role === 'ROLE_MANAGER'
+    );
+  
+    if (!isAuthenticated) return <Navigate to="/login" replace />;
+    return isStaff ? <Outlet /> : <Navigate to="/" replace />;
 };

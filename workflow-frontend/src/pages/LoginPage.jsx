@@ -1,73 +1,110 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import api from '../api/axios';
+import { Sparkles, Mail, Lock, ChevronRight, Loader2 } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const login = useAuthStore(state => state.login);
+  const [loading, setLoading] = useState(false);
+  const login = useAuthStore((state) => state.login);
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setLoading(true);
     try {
-      const res = await api.post('/auth/login', { email, password });
-      
-      if (res.data.success) {
-        login(user, token);
-        
-        // Redirect based on roles
-        if (user.roles.some(r => r === 'ROLE_ADMIN' || r === 'ROLE_MANAGER')) {
-          navigate('/admin');
-        } else {
-          navigate('/');
-        }
+      const user = await login(email, password);
+      toast.success(`Chào mừng trở lại, ${user.fullName}!`);
+      if (user.roles?.includes('ROLE_ADMIN') || user.roles?.includes('ROLE_MANAGER')) {
+        navigate('/admin');
+      } else if (user.roles?.includes('ROLE_THERAPIST') || user.roles?.includes('ROLE_STAFF')) {
+        navigate('/staff');
       } else {
-        setError(res.data.message || 'Đăng nhập thất bại.');
+        navigate('/');
       }
-    } catch {
-      console.error('Login error:', err);
-      setError(err.response?.data || 'Lỗi kết nối đến server.');
+    } catch (err) {
+      toast.error('Email hoặc mật khẩu không chính xác.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded-xl shadow-md w-96 border border-gray-100">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Đăng nhập</h2>
-        {error && <p className="text-red-500 text-sm mb-4 text-center">{error}</p>}
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input 
-              type="email" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
+    <div className="min-h-screen flex items-center justify-center p-6 bg-emerald-50/20">
+      <div className="max-w-md w-full space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+        <div className="text-center space-y-4">
+          <div className="inline-flex items-center justify-center p-4 bg-primary rounded-[2rem] shadow-premium-lg border border-primary/10">
+            <Sparkles className="w-10 h-10 text-white animate-spin-slow" />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Mật khẩu</label>
-            <input 
-              type="password" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
+          <h1 className="text-4xl font-serif font-black text-gray-900 tracking-tight uppercase">Lumière Spa</h1>
+          <p className="text-gray-400 font-bold text-xs uppercase tracking-[0.25em]">Đăng nhập hệ thống</p>
+        </div>
+
+        <div className="glass p-10 rounded-[3rem] shadow-premium-md border border-primary/5">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <label htmlFor="login-email" className="text-[10px] font-black text-primary uppercase tracking-widest ml-1 block">Địa chỉ Email</label>
+              <div className="relative">
+                <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-primary w-5 h-5" />
+                <input
+                  id="login-email"
+                  type="email"
+                  required
+                  className="w-full pl-14 pr-6 py-5 bg-white border border-gray-100 rounded-3xl outline-none font-bold text-gray-900 shadow-inner focus:border-primary/20 transition-all cursor-text"
+                  placeholder="name@example.com"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="login-password" className="text-[10px] font-black text-primary uppercase tracking-widest ml-1 block">Mật khẩu</label>
+              <div className="relative">
+                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-primary w-5 h-5" />
+                <input
+                  id="login-password"
+                  type="password"
+                  required
+                  className="w-full pl-14 pr-6 py-5 bg-white border border-gray-100 rounded-3xl outline-none font-bold text-gray-900 shadow-inner focus:border-primary/20 transition-all cursor-text"
+                  placeholder="••••••••"
+                  autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-primary text-white py-6 rounded-[2rem] font-black text-xs uppercase tracking-[0.3em] shadow-premium-md hover:bg-primary-hover hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center space-x-3 disabled:opacity-50 cursor-pointer"
+            >
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                <>
+                  <span>Xác nhận đăng nhập</span>
+                  <ChevronRight className="w-5 h-5 text-gold" />
+                </>
+              )}
+            </button>
+          </form>
+
+          <div className="mt-10 text-center space-y-4">
+            <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest">Bạn chưa có tài khoản?</p>
+            <Link to="/register" className="inline-block text-primary font-black text-xs uppercase tracking-widest hover:text-primary-hover transition cursor-pointer">
+              Đăng ký ngay tại đây
+            </Link>
           </div>
-          <button 
-            type="submit" 
-            className="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition"
-          >
-            Đăng nhập
-          </button>
-        </form>
-        <p className="text-xs text-gray-400 mt-4 text-center">Tài khoản test: admin@example.com / password</p>
+        </div>
+
+        <div className="text-center">
+          <Link to="/" className="text-gray-300 text-[10px] font-black uppercase tracking-widest hover:text-primary transition cursor-pointer">
+            Quay lại trang chủ
+          </Link>
+        </div>
       </div>
     </div>
   );

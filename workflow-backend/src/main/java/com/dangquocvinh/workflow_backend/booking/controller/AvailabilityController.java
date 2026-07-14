@@ -1,7 +1,6 @@
 package com.dangquocvinh.workflow_backend.booking.controller;
 
 import com.dangquocvinh.workflow_backend.booking.service.AvailabilityService;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/availability")
@@ -21,12 +21,15 @@ public class AvailabilityController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LocalTime>> getAvailableSlots(
-            @RequestParam UUID serviceId,
+    public ResponseEntity<List<java.util.Map<String, String>>> getAvailability(
+            @RequestParam List<UUID> serviceIds,
             @RequestParam UUID branchId,
-            @RequestParam UUID staffId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+            @RequestParam(required = false) UUID staffId,
+            @RequestParam String date) {
         
-        return ResponseEntity.ok(availabilityService.findAvailableSlots(serviceId, branchId, staffId, date));
+        LocalDate localDate = LocalDate.parse(date);
+        List<java.util.Map<String, String>> slots = availabilityService.findAvailableSlotsWithStaff(serviceIds, branchId, staffId, localDate);
+        
+        return ResponseEntity.ok(slots);
     }
 }

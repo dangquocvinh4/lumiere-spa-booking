@@ -1,42 +1,38 @@
-# Tài liệu hỗ trợ Báo cáo Thực tập Tốt nghiệp (TTTN)
+# Ghi chú Báo cáo Tốt nghiệp - Lumière Spa System
 
-## 1. Tổng quan đề tài
-- **Tên đề tài**: Xây dựng hệ thống quản lý và đặt lịch dịch vụ Spa Harmony.
-- **Lý do chọn đề tài**: Giải quyết bài toán quản lý lịch hẹn thủ công, tối ưu hóa thời gian rảnh của nhân viên và nâng cao trải nghiệm khách hàng trong ngành làm đẹp.
+Tài liệu này tổng hợp các luận điểm chuyên môn quan trọng để bạn đưa vào báo cáo và trình bày trước hội đồng.
 
-## 2. Công nghệ sử dụng
-- **Frontend**: React 19, Vite, TailwindCSS, Zustand (State Management), React Router 7, Lucide Icons.
-- **Backend**: Java 17, Spring Boot 3, Spring Security (JWT), Hibernate/JPA.
-- **Database**: PostgreSQL.
-- **Testing**: JUnit 5, Playwright (Smoke test).
-- **Tools**: Git, Docker (optional), NotebookLM (Knowledge base).
+## 1. Mục tiêu và Đối tượng
+- **Đề tài**: Xây dựng hệ thống quản lý và đặt lịch Spa thông minh theo hướng tự động hóa vận hành.
+- **Vấn đề giải quyết**: Khắc phục tình trạng chồng chéo lịch hẹn, thiếu minh bạch trong quản lý doanh thu và khó khăn khi khách hàng muốn lựa chọn kỹ thuật viên yêu thích.
+- **Đối tượng**: Khách hàng cá nhân, nhân viên spa, và bộ phận quản lý.
 
-## 3. Kiến trúc hệ thống
-- **Client-Server**: Tách biệt Frontend và Backend thông qua RESTful API.
-- **Bảo mật**: Cơ chế Stateless với JWT. Phân quyền theo Role (ADMIN, MANAGER, CUSTOMER).
-- **Database**: Thiết kế chuẩn hóa (Normal Form) đảm bảo tính toàn vẹn dữ liệu giữa Lịch hẹn - Khách hàng - Nhân viên - Dịch vụ.
+## 2. Điểm nhấn Công nghệ (Technical Highlights)
+- **Kiến trúc**: Micro-monolith tối giản, tách biệt Frontend (React) và Backend (Spring Boot), giao tiếp qua RESTful API chuẩn hóa.
+- **Tính toán Availability (Bài toán lõi)**: 
+  - Áp dụng thuật toán tính toán khung giờ trống dựa trên: Giờ mở cửa chi nhánh, Lịch trực của nhân viên, Danh sách ngày nghỉ phép, và Thời lượng thực tế của từng loại dịch vụ.
+  - Đảm bảo tính nhất quán (Consistency) trong môi trường đa người dùng.
+- **Snapshot Pattern**: 
+  - Kỹ thuật lưu trữ bản sao dữ liệu dịch vụ (Tên, Giá) ngay tại thời điểm khách đặt lịch.
+  - Giúp báo cáo tài chính chính xác ngay cả khi dịch vụ gốc thay đổi giá hoặc bị xóa sau này.
+- **Thiết kế UI/UX**:
+  - Ngôn ngữ thiết kế: Glassmorphism kết hợp Emerald Spa Theme.
+  - Tối ưu hóa trải nghiệm: Hệ thống Stepper Booking giảm thiểu cognitive load cho người dùng.
+  - Tính đáp ứng: Đạt 100% Mobile Responsive (verified on 375px width).
 
-## 4. Các chức năng chính
-### Đối với Khách hàng:
-- Đăng ký/Đăng nhập.
-- Xem danh mục dịch vụ trực tuyến.
-- Đặt lịch hẹn thông minh (tự động check lịch trống nhân viên).
-- Quản lý lịch sử cuộc hẹn.
-- Cập nhật thông tin cá nhân.
+## 3. Các thực thể Database quan trọng (ERD Logic)
+- **User & Role**: Phân quyền 4 cấp độ (RBAC).
+- **SpaService & Category**: Phân loại dịch vụ đa cấp.
+- **StaffProfile & WorkingSchedule**: Liên kết chặt chẽ để xác định năng lực phục vụ.
+- **StaffTimeOff**: Thực thể quản lý ngoại lệ trong lịch làm việc.
+- **Appointment & AppointmentService**: Cấu trúc lưu trữ snapshot để quản lý doanh thu bền vững.
 
-### Đối với Quản trị viên:
-- Dashboard thống kê kinh doanh.
-- Quản lý quy trình lịch hẹn (Xác nhận -> Check-in -> Hoàn thành).
-- Quản lý danh mục dịch vụ và bảng giá.
-- Quản lý đội ngũ nhân viên và chi nhánh.
+## 4. Kịch bản Kiểm thử (Testing Scenarios)
+- **Smoke Test**: Đăng ký -> Đăng nhập -> Đặt lịch thành công.
+- **Boundary Test**: Đặt lịch vào sát giờ đóng cửa (Hệ thống phải tự động ẩn các slot không đủ thời gian thực hiện dịch vụ).
+- **Conflict Test**: 2 khách hàng cùng đặt 1 nhân viên vào 1 giờ (Hệ thống chỉ cho phép 1 người thành công).
+- **State Test**: Admin không thể hoàn thành một lịch hẹn đã bị hủy (Chống sai lệch trạng thái).
 
-## 5. Kết quả đạt được
-- Hệ thống chạy ổn định trên môi trường local.
-- Giao diện hiện đại, đáp ứng tốt trải nghiệm người dùng (UX).
-- Xử lý được các bài toán xung đột lịch hẹn (double-booking).
-- Đảm bảo an toàn thông tin với quy trình xác thực JWT và bảo mật biến môi trường.
-
-## 6. Hướng phát triển
-- Tích hợp thanh toán trực tuyến (VNPay/Momo).
-- Hệ thống nhắc lịch qua SMS/Email tự động.
-- Ứng dụng di động (Mobile App) dành cho nhân viên.
+## 5. Kết luận & Hướng phát triển
+- **Đạt được**: Một hệ thống hoàn chỉnh từ đặt lịch, vận hành đến thống kê, có tính thẩm mỹ và bảo mật cao.
+- **Mở rộng**: Tích hợp thanh toán online (VNPay/Momo), gửi thông báo qua Zalo/Email tự động, và ứng dụng AI để gợi ý dịch vụ theo lịch sử khách hàng.

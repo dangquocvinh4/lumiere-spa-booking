@@ -46,11 +46,22 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/uploads/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/services/**").permitAll()
                 .requestMatchers("/api/branches/**").permitAll()
                 .requestMatchers("/api/staff/**").permitAll()
+                .requestMatchers("/api/availability/**").permitAll()
+                .requestMatchers("/api/reviews/service/**").permitAll()
+                .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/vouchers/**").permitAll()
+                .requestMatchers("/api/chatbot/**").permitAll()
+                .requestMatchers("/api/payment/verify-vnpay/**").permitAll()
                 .anyRequest().authenticated()
+            )
+            .exceptionHandling(exception -> exception
+                .authenticationEntryPoint((request, response, authException) -> 
+                    response.sendError(jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage())
+                )
             );
 
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

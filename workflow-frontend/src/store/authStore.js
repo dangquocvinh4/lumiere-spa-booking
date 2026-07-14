@@ -1,13 +1,23 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import api from '../api/axios';
 
 export const useAuthStore = create(
   persist(
     (set) => ({
-      user: null, // Chứa { id, email, fullName, roles }
+      user: null,
       token: null,
       isAuthenticated: false,
-      login: (userData, token) => set({ user: userData, token: token, isAuthenticated: true }),
+
+      login: async (email, password) => {
+        const res = await api.post('/auth/login', { email, password });
+        const { token, user } = res.data.data;
+        set({ user, token, isAuthenticated: true });
+        return user;
+      },
+
+      updateUser: (userData) => set({ user: userData }),
+
       logout: () => set({ user: null, token: null, isAuthenticated: false }),
     }),
     { name: 'auth-storage' }

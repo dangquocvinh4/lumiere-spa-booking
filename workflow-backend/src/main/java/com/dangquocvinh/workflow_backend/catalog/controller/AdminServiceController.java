@@ -11,13 +11,23 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/admin/services")
-@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')")
+@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
 public class AdminServiceController {
 
     private final SpaServiceManager serviceManager;
 
     public AdminServiceController(SpaServiceManager serviceManager) {
         this.serviceManager = serviceManager;
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAllServices() {
+        return ResponseEntity.ok(serviceManager.getAllServices());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<SpaService> getService(@PathVariable UUID id) {
+        return ResponseEntity.ok(serviceManager.getServiceById(id));
     }
 
     @PostMapping
@@ -34,5 +44,11 @@ public class AdminServiceController {
     public ResponseEntity<String> deleteService(@PathVariable UUID id) {
         serviceManager.softDeleteService(id);
         return ResponseEntity.ok("Đã vô hiệu hóa dịch vụ!");
+    }
+
+    @PatchMapping("/{id}/restore")
+    public ResponseEntity<String> restoreService(@PathVariable UUID id) {
+        serviceManager.restoreService(id);
+        return ResponseEntity.ok("Đã khôi phục dịch vụ!");
     }
 }

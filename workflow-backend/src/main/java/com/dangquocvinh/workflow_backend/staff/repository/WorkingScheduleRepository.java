@@ -7,4 +7,5 @@ import java.util.UUID;
 
 public interface WorkingScheduleRepository extends JpaRepository<WorkingSchedule, UUID> {
     List<WorkingSchedule> findByStaffId(UUID staffId);
+    List<WorkingSchedule> findByStaffIdAndDayOfWeek(UUID staffId, Integer dayOfWeek);
 }

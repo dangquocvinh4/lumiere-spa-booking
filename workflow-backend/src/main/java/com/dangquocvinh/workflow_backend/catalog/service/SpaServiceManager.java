@@ -48,9 +48,19 @@ public class SpaServiceManager {
         return serviceRepository.save(service);
     }
 
+    public List<SpaService> getAllServices() {
+        return serviceRepository.findAll();
+    }
+
     public void softDeleteService(UUID id) {
         SpaService service = getServiceById(id);
         service.setActive(false);
+        serviceRepository.save(service);
+    }
+
+    public void restoreService(UUID id) {
+        SpaService service = serviceRepository.findById(id).orElseThrow();
+        service.setActive(true);
         serviceRepository.save(service);
     }
 }

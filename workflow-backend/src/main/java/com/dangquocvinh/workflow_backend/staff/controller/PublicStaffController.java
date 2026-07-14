@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.util.UUID;
 
@@ -26,5 +27,10 @@ public class PublicStaffController {
             @RequestParam(required = false) UUID branchId,
             @RequestParam(required = false) UUID serviceId) {
         return ResponseEntity.ok(staffManager.getFilteredProfiles(branchId, serviceId));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<StaffProfile> getStaffById(@PathVariable UUID id) {
+        return ResponseEntity.ok(staffManager.getProfileById(id));
     }
 }

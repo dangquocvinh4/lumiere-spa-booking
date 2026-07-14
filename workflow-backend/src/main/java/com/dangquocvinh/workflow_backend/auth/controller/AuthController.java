@@ -49,7 +49,8 @@ public class AuthController {
             "id", user.getId(),
             "email", user.getEmail(),
             "fullName", user.getFullName(),
-            "roles", user.getRoles().stream().map(r -> r.getName().toString()).toList()
+            "roles", user.getRoles().stream().map(r -> r.getName().toString()).toList(),
+            "avatarUrl", user.getAvatarUrl() != null ? user.getAvatarUrl() : ""
         );
 
         return ResponseEntity.ok(Map.of(
@@ -80,11 +81,45 @@ public class AuthController {
 
         userRepository.save(user);
 
-        return ResponseEntity.ok("Đăng ký tài khoản thành công!");
+        return ResponseEntity.ok(Map.of("success", true, "message", "Đăng ký tài khoản thành công!"));
     }
 
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(Authentication authentication) {
-        return ResponseEntity.ok(authentication.getPrincipal());
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
+        Map<String, Object> userData = Map.of(
+            "id", user.getId(),
+            "email", user.getEmail(),
+            "fullName", user.getFullName(),
+            "phone", user.getPhone() != null ? user.getPhone() : "",
+            "roles", user.getRoles().stream().map(r -> r.getName().toString()).toList(),
+            "avatarUrl", user.getAvatarUrl() != null ? user.getAvatarUrl() : ""
+        );
+        return ResponseEntity.ok(Map.of("success", true, "data", userData));
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<?> updateProfile(@RequestBody Map<String, String> profileData, Authentication authentication) {
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
+        user.setFullName(profileData.get("fullName"));
+        user.setPhone(profileData.get("phone"));
+        if (profileData.containsKey("avatarUrl")) {
+            user.setAvatarUrl(profileData.get("avatarUrl"));
+        }
+        userRepository.save(user);
+        return ResponseEntity.ok(Map.of("success", true, "message", "Cập nhật hồ sơ thành công"));
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody Map<String, String> passwordData, Authentication authentication) {
+        User user = userRepository.findByEmail(authentication.getName()).orElseThrow();
+        
+        if (!passwordEncoder.matches(passwordData.get("oldPassword"), user.getPassword())) {
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Mật khẩu cũ không chính xác"));
+        }
+
+        user.setPassword(passwordEncoder.encode(passwordData.get("newPassword")));
+        userRepository.save(user);
+        return ResponseEntity.ok(Map.of("success", true, "message", "Đổi mật khẩu thành công"));
     }
 }
