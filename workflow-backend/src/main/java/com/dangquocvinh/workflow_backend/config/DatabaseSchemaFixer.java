@@ -21,9 +21,9 @@ public class DatabaseSchemaFixer {
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement()) {
             
-            // Check if avatar_url column exists in users table
             boolean columnExists = false;
-            try (ResultSet rs = conn.getMetaData().getColumns(null, null, "users", "avatar_url")) {
+            String catalog = conn.getCatalog();
+            try (ResultSet rs = conn.getMetaData().getColumns(catalog, null, "users", "avatar_url")) {
                 if (rs.next()) {
                     columnExists = true;
                 }
